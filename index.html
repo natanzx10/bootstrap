@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Busca de Endereço por CEP</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center">Busca de Endereço por CEP</h1>
+        <form id="cepForm">
+            <div class="form-group">
+                <label for="cep">CEP</label>
+                <input type="text" class="form-control" id="cep" placeholder="Digite o CEP">
+            </div>
+            <button type="submit" class="btn btn-primary">Buscar Endereço</button>
+        </form>
+        <div id="resultado" class="mt-4"></div>
+    </div>
+
+    <script>
+        document.getElementById('cepForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const cep = document.getElementById('cep').value;
+
+            fetch(`https://viacep.com.br/ws/${cep}/json/`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.erro) {
+                        document.getElementById('resultado').innerText = 'CEP não encontrado.';
+                    } else {
+                        const resultado = `
+                            Rua: ${data.logradouro} <br>
+                            Bairro: ${data.bairro} <br>
+                            Cidade: ${data.localidade} <br>
+                            Estado: ${data.uf}
+                        `;
+                        document.getElementById('resultado').innerHTML = resultado;
+                    }
+                })
+                .catch(error => {
+                    document.getElementById('resultado').innerText = 'Erro ao buscar o CEP.';
+                });
+        });
+    </script>
+</body>
+</html>
